@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Европейски шахматен турнир 2026</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo">♔ ШАХМАТ 2026 ♔</div>
+            <nav>
+                <ul>
+                    <li><a href="#event">За събитието</a></li>
+                    <li><a href="#speakers">Оратори</a></li>
+                    <li><a href="#location">Място</a></li>
+                    <li><a href="{{ url_for('chess_board') }}">Шахматна дъска</a></li>
+                    <li><a href="{{ url_for('register') }}" class="btn-primary">Регистрирай се</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>♔ Европейски Шахматен Турнир 2026 ♔</h1>
+        <p class="hero-subtitle">Присъедини се към най-престижния шахматен турнир в Европа</p>
+        <p class="hero-date">📅 15-22 май 2026 | 📍 София, България</p>
+        <a href="{{ url_for('register') }}" class="btn-primary">Регистрирай се сега</a>
+        <a href="{{ url_for('chess_board') }}" class="btn-secondary">Виж шахматната дъска</a>
+    </section>
+
+    <!-- EVENT DESCRIPTION -->
+    <section id="event" class="container">
+        <h2>За събитието</h2>
+        <div class="event-description">
+            <h3 style="color: #d4af37; margin-bottom: 1rem;">🎯 Европейският шахматен турнир 2026</h3>
+            <p style="margin-bottom: 1rem;">
+                Добре дошли на един от най-престижните шахматни турнири в света! Събитието ни привлича шахматисти от цяла Европа и е прекрасна възможност да тествате своите умения срещу световните шампиони.
+            </p>
+            <p style="margin-bottom: 1rem;">
+                <strong>Основни детайли:</strong>
+            </p>
+            <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                <li>🏆 Награден фонд: €50,000</li>
+                <li>👥 Участници: 256 световни гросмайстори</li>
+                <li>⏱️ Формат: Швейцарска система</li>
+                <li>🎓 Обучение от световни шампиони</li>
+                <li>🌟 Мастер класове на живо</li>
+                <li>🎉 Церемония по награждаване и галапо</li>
+            </ul>
+            <p>
+                Независимо дали сте начинаещ или опитен играч, в нашето събитие има място за вас. Присъединете се към световната шахматна общност и будете части от историческо събитие!
+            </p>
+        </div>
+    </section>
+
+    <!-- SPEAKERS SECTION -->
+    <section id="speakers" class="container">
+        <h2>Световни гросмайстори и тренери</h2>
+        <div class="speakers-grid">
+            <!-- Speaker 1 - Magnus Carlsen -->
+            <div class="speaker-card">
+                <img src="{{ url_for('static', filename='images/magnus_carlsen.jpg') }}" alt="Magnus Carlsen" style="width: 100%; height: 250px; object-fit: cover;">
+                <div class="speaker-info">
+                    <h3>Magnus Carlsen</h3>
+                    <p class="speaker-title">🏆 Световен шахматен шампион (2013-2023)</p>
+                    <p class="speaker-bio">
+                        Норвежкият гений Magnus Carlsen е считан за най-добрия шахматист на всички времена. Той ще поведе екскузивни мастер класове по стратегия и съвременния подход в шахмата.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Speaker 2 - Ding Liren -->
+            <div class="speaker-card">
+                <img src="{{ url_for('static', filename='images/ding_liren.jpg') }}" alt="Ding Liren" style="width: 100%; height: 250px; object-fit: cover;">
+                <div class="speaker-info">
+                    <h3>Ding Liren</h3>
+                    <p class="speaker-title">🥇 Световен шахматен шампион (2023-2024)</p>
+                    <p class="speaker-bio">
+                        Китайския гросмайстор Ding Liren е един от най-силните играчи на съвременния шахмат. Той ще споделя своите опосредствани методи на съвременната игра и отваряния.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Speaker 3 - Fabiano Caruana -->
+            <div class="speaker-card">
+                <img src="{{ url_for('static', filename='images/fabiano_caruana.jpg') }}" alt="Fabiano Caruana" style="width: 100%; height: 250px; object-fit: cover;">
+                <div class="speaker-info">
+                    <h3>Fabiano Caruana</h3>
+                    <p class="speaker-title">🌟 Международен гросмайстор (Рейтинг: 2760+)</p>
+                    <p class="speaker-bio">
+                        Итало-американският майстор Fabiano Caruana е един от най-динамичните играчи в световния шахмат. Той ще преподава напреднали техники за преценка на позиции и тактика.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOCATION SECTION -->
+    <section id="location" class="container">
+        <h2>Място на провеждане</h2>
+        <div class="location-container">
+            <div class="location-map" style="background-image: url('{{ url_for('static', filename='images/ndk_sofia.jpg') }}'); background-size: cover; background-position: center; position: relative;">
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 1.5rem; text-align: center;">
+                    <h4 style="color: white; margin: 0; font-size: 1.2rem; margin-bottom: 0.5rem;">Национален дворец на културата</h4>
+                    <p style="color: #f0e68c; margin: 0; font-size: 1rem;">София, България</p>
+                </div>
+            </div>
+            <div class="location-details">
+                <h3>📍 Национален дворец на културата</h3>
+                <p><strong>Адрес:</strong> 1 Буд. Васил Левски, 1000 София, България</p>
+                <p><strong>Телефон:</strong> +359 2 916 6300</p>
+                <p><strong>Email:</strong> info@ndk.bg</p>
+                <p><strong>Парковка:</strong> Безплатна парковка за участници</p>
+                <p><strong>Транспорт:</strong> 5 минути от метростанция "Оборище"</p>
+                <p><strong>Удобства:</strong> Ресторант, кафе, Wi-Fi, климатизация</p>
+                <p style="margin-top: 1.5rem; color: #666;">
+                    Място с 800 места за торнирни партии, конферентни зали за мастер класове и луксозни съоръжения за всички участници.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCHEDULE SECTION -->
+    <section class="container" style="background: #f9f9f9; margin: 2rem 0; border-radius: 12px;">
+        <h2>📅 График на събитието</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
+                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">15 май - Отваряне</h4>
+                <p>Церемония по открытие, регистрация на участници и приветствие от организаторите.</p>
+            </div>
+            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
+                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">16-20 май - Турнир</h4>
+                <p>5 тура на турнира. Всеки ден по един тур, начало в 14:00 и 20:00.</p>
+            </div>
+            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
+                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">21 май - Мастер класове</h4>
+                <p>Лекции от водещи гросмайстори и анализ на избрани партии.</p>
+            </div>
+            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
+                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">22 май - Финала</h4>
+                <p>Финални партии и церемония по награждаване с галапо.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- REGISTRATION CALL TO ACTION -->
+    <section style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 4rem 2rem; text-align: center;">
+        <h2 style="color: #d4af37; margin-bottom: 1rem;">Готов ли си за предизвикателството?</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #f0e68c;">
+            Присъедини се към хиляди шахматисти от цяла Европа и борави за титлата!
+        </p>
+        <a href="{{ url_for('register') }}" class="btn-primary">Регистрирай се сега</a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ℹ️ За събитието</h4>
+                <p>Европейският шахматен турнир 2026 е едно от най-престижните събитие за всички шахматни любители и професионалисти.</p>
+            </div>
+            <div class="footer-section">
+                <h4>📞 Контакти</h4>
+                <p><strong>Телефон:</strong> +359 2 916 6300</p>
+                <p><strong>Email:</strong> info@chesseurope2026.bg</p>
+                <p><strong>Адрес:</strong> 1 Буд. Васил Левски, София</p>
+            </div>
+            <div class="footer-section">
+                <h4>🔗 Полезни линкове</h4>
+                <a href="#">Правила на турнира</a>
+                <a href="#">Чести въпроси</a>
+                <a href="#">За нас</a>
+                <a href="#">Политика на приватност</a>
+            </div>
+            <div class="footer-section">
+                <h4>📱 Следи ни</h4>
+                <p>Facebook | Twitter | Instagram | YouTube</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Европейски шахматен турнир. Всички права запазени. ♔</p>
+        </div>
+    </footer>
+</body>
+</html>

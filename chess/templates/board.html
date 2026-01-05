@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивна шахматна дъска - Европейски турнир 2026</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .board-section {
+            background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
+            padding: 3rem 2rem;
+        }
+
+        .board-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0;
+            border: 5px solid #333;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background: white;
+        }
+
+        .square {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .square:hover {
+            transform: scale(1.05);
+            filter: brightness(0.95);
+        }
+
+        .square.white {
+            background-color: #f0d9b5;
+        }
+
+        .square.black {
+            background-color: #b58863;
+        }
+
+        .square.selected {
+            background-color: #baca44 !important;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .board-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-reset {
+            background: #d4af37;
+            color: #1a1a1a;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: #f0e68c;
+            transform: translateY(-2px);
+        }
+
+        .board-legend {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .legend-piece {
+            font-size: 2rem;
+        }
+
+        .legend-text {
+            flex: 1;
+        }
+
+        .legend-text .white-piece {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .legend-text .black-piece {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .info-box h3 {
+            color: #d4af37;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .square {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+
+            .legend-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo">♔ ШАХМАТ 2026 ♔</div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Начало</a></li>
+                    <li><a href="{{ url_for('register') }}" class="btn-primary">Регистрирай се</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>♔ Интерактивна Шахматна Дъска ♔</h1>
+        <p class="hero-subtitle">Научи се как работи шахматната дъска и фигурите</p>
+    </section>
+
+    <!-- BOARD SECTION -->
+    <section class="board-section container">
+        <h2>Шахматна дъска 8x8</h2>
+        
+        <div class="board-wrapper">
+            <!-- Chess Board -->
+            <div class="chess-board" id="chessBoard"></div>
+
+            <!-- Controls -->
+            <div class="board-controls">
+                <button class="btn-reset" onclick="resetBoard()">🔄 Възстанови начална позиция</button>
+                <button class="btn-reset" onclick="clearBoard()">🗑️ Изчисти дъската</button>
+            </div>
+
+            <!-- Legend -->
+            <div class="board-legend">
+                <h3 style="color: #1a1a1a; margin-bottom: 1.5rem; text-align: center;">📖 Легенда на фигурите</h3>
+                
+                <div class="legend-grid">
+                    <!-- White Pieces -->
+                    <div class="legend-item">
+                        <div class="legend-piece">♔</div>
+                        <div class="legend-text"><span class="white-piece">Бял крал</span><br><small>Може да се движи един квадрат в любима посока</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♕</div>
+                        <div class="legend-text"><span class="white-piece">Бяла кралица</span><br><small>Най-мощната фигура - движи се диагонално, хоризонтално или вертикално</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♖</div>
+                        <div class="legend-text"><span class="white-piece">Бял топ</span><br><small>Движи се хоризонтално или вертикално</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♗</div>
+                        <div class="legend-text"><span class="white-piece">Бял епископ</span><br><small>Движи се само диагонално</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♘</div>
+                        <div class="legend-text"><span class="white-piece">Бял рицар</span><br><small>Движи се в L форма (2+1 квадрата)</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♙</div>
+                        <div class="legend-text"><span class="white-piece">Бяла пешка</span><br><small>Движи се напред един квадрат (два в начало)</small></div>
+                    </div>
+
+                    <!-- Black Pieces -->
+                    <div class="legend-item">
+                        <div class="legend-piece">♚</div>
+                        <div class="legend-text"><span class="black-piece">Черен крал</span><br><small>Може да се движи един квадрат в любима посока</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♛</div>
+                        <div class="legend-text"><span class="black-piece">Черна кралица</span><br><small>Най-мощната фигура - движи се диагонално, хоризонтално или вертикално</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♜</div>
+                        <div class="legend-text"><span class="black-piece">Черен топ</span><br><small>Движи се хоризонтално или вертикално</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♝</div>
+                        <div class="legend-text"><span class="black-piece">Черен епископ</span><br><small>Движи се само диагонално</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♞</div>
+                        <div class="legend-text"><span class="black-piece">Черен рицар</span><br><small>Движи се в L форма (2+1 квадрата)</small></div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-piece">♟</div>
+                        <div class="legend-text"><span class="black-piece">Черна пешка</span><br><small>Движи се напред един квадрат (два в начало)</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <h3>💡 За шахматната дъска</h3>
+                <p>
+                    Шахматната дъска има 64 квадрата, подредени в 8 редици и 8 колони. Всеки играч има 16 фигури: 1 крал, 1 кралица, 2 топа, 2 епископа, 2 рицаря и 8 пешки. 
+                    Целта на играта е да захванеш краля на противника!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- RULES SECTION -->
+    <section class="container" style="background: #f9f9f9; margin: 2rem 0; padding: 3rem 2rem; border-radius: 12px;">
+        <h2>🎯 Основни правила</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
+                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">♔ Как се движат фигурите</h4>
+                <p>Всяка фигура има различни правила за движение. Крал един квадрат, кралица неограничено в линии, топ хоризонтално/вертикално и т.н.</p>
+            </div>
+            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
+                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">🎮 Белите винаги играят първи</h4>
+                <p>В шахмата традиционно белите фигури правят първия ход. След това играчите редуват ходовете един по един.</p>
+            </div>
+            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
+                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">🎯 Целта на играта</h4>
+                <p>Целта е да поставиш краля на противника в позиция, където той не може да избегне бъдещия замах (мат).</p>
+            </div>
+            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
+                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">✊ Специални ходове</h4>
+                <p>Рокада, вземане наихода (en passant) и трансформация на пешката са специални ходове в шахмата.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ℹ️ За събитието</h4>
+                <p>Европейският шахматен турнир 2026 е едно от най-престижните събитие за всички шахматни любители и професионалисти.</p>
+            </div>
+            <div class="footer-section">
+                <h4>📞 Контакти</h4>
+                <p><strong>Телефон:</strong> +359 2 916 6300</p>
+                <p><strong>Email:</strong> info@chesseurope2026.bg</p>
+                <p><strong>Адрес:</strong> 1 Буд. Васил Левски, София</p>
+            </div>
+            <div class="footer-section">
+                <h4>🔗 Полезни линкове</h4>
+                <a href="#">Правила на турнира</a>
+                <a href="#">Чести въпроси</a>
+                <a href="#">За нас</a>
+                <a href="#">Политика на приватност</a>
+            </div>
+            <div class="footer-section">
+                <h4>📱 Следи ни</h4>
+                <p>Facebook | Twitter | Instagram | YouTube</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Европейски шахматен турнир. Всички права запазени. ♔</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize board with starting position
+        const startingPosition = [
+            ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],  // Black pieces (row 8)
+            ['♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'],  // Black pawns (row 7)
+            ['', '', '', '', '', '', '', ''],             // Empty
+            ['', '', '', '', '', '', '', ''],             // Empty
+            ['', '', '', '', '', '', '', ''],             // Empty
+            ['', '', '', '', '', '', '', ''],             // Empty
+            ['♙', '♙', '♙', '♙', '♙', '♙', '♙', '♙'],  // White pawns (row 2)
+            ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']   // White pieces (row 1)
+        ];
+
+        let boardState = JSON.parse(JSON.stringify(startingPosition));
+        let selectedSquare = null;
+
+        function initializeBoard() {
+            const boardElement = document.getElementById('chessBoard');
+            boardElement.innerHTML = '';
+
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    const isWhite = (row + col) % 2 === 0;
+                    
+                    square.className = `square ${isWhite ? 'white' : 'black'}`;
+                    square.id = `square-${row}-${col}`;
+                    square.textContent = boardState[row][col];
+                    
+                    square.addEventListener('click', () => handleSquareClick(row, col, square));
+                    
+                    boardElement.appendChild(square);
+                }
+            }
+        }
+
+        function handleSquareClick(row, col, squareElement) {
+            if (selectedSquare) {
+                selectedSquare.classList.remove('selected');
+            }
+            
+            selectedSquare = squareElement;
+            selectedSquare.classList.add('selected');
+            
+            // Can also add piece dragging functionality here
+        }
+
+        function resetBoard() {
+            boardState = JSON.parse(JSON.stringify(startingPosition));
+            initializeBoard();
+        }
+
+        function clearBoard() {
+            boardState = Array(8).fill(null).map(() => Array(8).fill(''));
+            initializeBoard();
+        }
+
+        // Initialize board on page load
+        initializeBoard();
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрационна форма - Европейски шахматен турнир 2026</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo">♔ ШАХМАТ 2026 ♔</div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Начало</a></li>
+                    <li><a href="{{ url_for('chess_board') }}">Шахматна дъска</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>Регистрирай се на турнира</h1>
+        <p class="hero-subtitle">Попълни формата по-долу, за да се присъединиш към събитието</p>
+    </section>
+
+    <!-- REGISTRATION FORM -->
+    <div class="form-container">
+        <div class="success-message" id="successMessage">
+            ✓ Успешна регистрация! Благодарим за участието. Ще получиш потвърждение по email.
+        </div>
+
+        <form id="registrationForm">
+            <h2 style="color: #1a1a1a; margin-bottom: 2rem; text-align: center;">📝 Форма за регистрация</h2>
+
+            <div class="form-group">
+                <label for="name">Пълното име *</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    placeholder="Въведи твоето име"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email адреса *</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="твойEmail@пример.bg"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Телефонен номер *</label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="+359 2 XXX XXXX"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="skill_level">Ниво на умения *</label>
+                <select id="skill_level" name="skill_level" required>
+                    <option value="">-- Избери ниво --</option>
+                    <option value="начинаещ">🟢 Начинаещ (0-1200 Elo)</option>
+                    <option value="любител">🟡 Любител (1200-1800 Elo)</option>
+                    <option value="продвинат">🔵 Продвинат (1800-2200 Elo)</option>
+                    <option value="мастер">🔴 Мастер (2200+ Elo)</option>
+                    <option value="гросмайстор">👑 Гросмайстор (2500+ Elo)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Категория на участие *</label>
+                <select id="category" name="category" required>
+                    <option value="">-- Избери категория --</option>
+                    <option value="взрослы">♔ Класическа игра</option>
+                    <option value="junior">♕ Млади (до 18 години)</option>
+                    <option value="senor">♖ Ветерани (55+)</option>
+                    <option value="female">♗ Жени</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Многогодишен опит в шахмата</label>
+                <input 
+                    type="number" 
+                    id="experience" 
+                    name="experience" 
+                    placeholder="напр. 10 години"
+                    min="0"
+                    max="100"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="tournament_format">Предпочитан формат на игра</label>
+                <select id="tournament_format" name="tournament_format">
+                    <option value="блиц">Блиц (3 мин)</option>
+                    <option value="бърз">Бърз (10 мин)</option>
+                    <option value="класически" selected>Класически (90 мин)</option>
+                    <option value="микс">Микс</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Допълнителна информация</label>
+                <textarea 
+                    id="message" 
+                    name="message" 
+                    placeholder="Напиши всичко, което искаш да знаем за теб, твоите цели или специални нужди..."
+                ></textarea>
+            </div>
+
+            <div class="form-group" style="margin-top: 2rem;">
+                <label style="display: flex; align-items: center; font-weight: normal;">
+                    <input 
+                        type="checkbox" 
+                        id="terms" 
+                        name="terms"
+                        required
+                        style="width: auto; margin-right: 0.5rem;"
+                    >
+                    Съглашам се с правилата на турнира и политиката на приватност *
+                </label>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+                <label style="display: flex; align-items: center; font-weight: normal;">
+                    <input 
+                        type="checkbox" 
+                        id="newsletter" 
+                        name="newsletter"
+                        style="width: auto; margin-right: 0.5rem;"
+                    >
+                    Желая да получавам новини и актуализации по email
+                </label>
+            </div>
+
+            <button type="submit" class="btn-submit">✓ Регистрирай се сега</button>
+        </form>
+
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e0e0e0; text-align: center;">
+            <p style="color: #666; margin-bottom: 1rem;">
+                Вече регистриран? <a href="{{ url_for('index') }}" style="color: #d4af37; text-decoration: none; font-weight: bold;">Върни се на началната страница</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ℹ️ За събитието</h4>
+                <p>Европейският шахматен турнир 2026 е едно от най-престижните събитие за всички шахматни любители и професионалисти.</p>
+            </div>
+            <div class="footer-section">
+                <h4>📞 Контакти</h4>
+                <p><strong>Телефон:</strong> +359 2 916 6300</p>
+                <p><strong>Email:</strong> info@chesseurope2026.bg</p>
+                <p><strong>Адрес:</strong> 1 Буд. Васил Левски, София</p>
+            </div>
+            <div class="footer-section">
+                <h4>🔗 Полезни линкове</h4>
+                <a href="#">Правила на турнира</a>
+                <a href="#">Чести въпроси</a>
+                <a href="#">За нас</a>
+                <a href="#">Политика на приватност</a>
+            </div>
+            <div class="footer-section">
+                <h4>📱 Следи ни</h4>
+                <p>Facebook | Twitter | Instagram | YouTube</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Европейски шахматен турнир. Всички права запазени. ♔</p>
+        </div>
+    </footer>
+
+    <script>
+        const form = document.getElementById('registrationForm');
+        const successMessage = document.getElementById('successMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validate terms
+            if (!document.getElementById('terms').checked) {
+                alert('Трябва да приемеш правилата и политиката на приватност!');
+                return;
+            }
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                skill_level: document.getElementById('skill_level').value,
+            };
+
+            try {
+                const response = await fetch('{{ url_for("submit_registration") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show success message
+                    successMessage.classList.add('show');
+                    
+                    // Reset form
+                    form.reset();
+
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successMessage.classList.remove('show');
+                    }, 5000);
+
+                    // Redirect to home after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '{{ url_for("index") }}';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Възникна грешка при регистрацията. Моля, опитай отново.');
+            }
+        });
+    </script>
+</body>
+</html>
