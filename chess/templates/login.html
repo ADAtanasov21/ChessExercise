@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрационна форма - Европейски шахматен турнир 2026</title>
+    <title>Влез - Европейски шахматен турнир 2026</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -19,7 +19,7 @@
                     <li><a href="{{ url_for('dashboard') }}" class="btn-primary">Мой профил</a></li>
                     <li><a href="{{ url_for('logout') }}" class="btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Изход</a></li>
                     {% else %}
-                    <li><a href="{{ url_for('login') }}" class="btn-primary">Вход</a></li>
+                    <li><a href="{{ url_for('register') }}" class="btn-primary">Регистрирай се</a></li>
                     {% endif %}
                 </ul>
             </nav>
@@ -28,40 +28,18 @@
 
     <!-- HERO SECTION -->
     <section class="hero">
-        <h1>Регистрирай се на турнира</h1>
-        <p class="hero-subtitle">Попълни формата по-долу, за да се присъединиш към събитието</p>
+        <h1>Влез на турнира</h1>
+        <p class="hero-subtitle">Влез със своята имейл адреса</p>
     </section>
 
-    <!-- REGISTRATION FORM -->
-    <div class="form-container">
+    <!-- LOGIN FORM -->
+    <div class="form-container" style="max-width: 400px;">
         <div class="success-message" id="successMessage">
-            ✓ Успешна регистрация! Добре дошъл/а в турнира!
+            ✓ Успешен вход! Пренасочвам...
         </div>
 
-        <form id="registrationForm">
-            <h2 style="color: #1a1a1a; margin-bottom: 2rem; text-align: center;">📝 Регистрация</h2>
-
-            <div class="form-group">
-                <label for="firstName">Име *</label>
-                <input 
-                    type="text" 
-                    id="firstName" 
-                    name="firstName" 
-                    placeholder="Въведи твоето име"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="lastName">Фамилия *</label>
-                <input 
-                    type="text" 
-                    id="lastName" 
-                    name="lastName" 
-                    placeholder="Въведи твоята фамилия"
-                    required
-                >
-            </div>
+        <form id="loginForm">
+            <h2 style="color: #1a1a1a; margin-bottom: 2rem; text-align: center;">🔐 Влез</h2>
 
             <div class="form-group">
                 <label for="email">Email адреса *</label>
@@ -69,47 +47,17 @@
                     type="email" 
                     id="email" 
                     name="email" 
-                    placeholder="твойEmail@пример.bg"
+                    placeholder="Email@пример.bg"
                     required
                 >
             </div>
 
-            <div class="form-group">
-                <label for="phone">Телефонен номер *</label>
-                <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
-                    placeholder="+359 2 XXX XXXX"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="gender">Пол *</label>
-                <select id="gender" name="gender" required>
-                    <option value="">-- Избери пол --</option>
-                    <option value="мъж">Мъж</option>
-                    <option value="жена">Жена</option>
-                    <option value="други">Други</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="additionalInfo">Допълнителна информация</label>
-                <textarea 
-                    id="additionalInfo" 
-                    name="additionalInfo" 
-                    placeholder="Напиши всичко, което искаш да знаем..."
-                ></textarea>
-            </div>
-
-            <button type="submit" class="btn-submit">✓ Регистрирай се</button>
+            <button type="submit" class="btn-submit">Вход</button>
         </form>
 
         <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e0e0e0; text-align: center;">
             <p style="color: #666; margin-bottom: 1rem;">
-                Вече регистриран? <a href="{{ url_for('login') }}" style="color: #d4af37; text-decoration: none; font-weight: bold;">Влез тук</a>
+                Нямате профил? <a href="{{ url_for('register') }}" style="color: #d4af37; text-decoration: none; font-weight: bold;">Регистрирайте се тук</a>
             </p>
         </div>
     </div>
@@ -145,23 +93,18 @@
     </footer>
 
     <script>
-        const form = document.getElementById('registrationForm');
+        const form = document.getElementById('loginForm');
         const successMessage = document.getElementById('successMessage');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const formData = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
                 email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                gender: document.getElementById('gender').value,
-                additionalInfo: document.getElementById('additionalInfo').value,
             };
 
             try {
-                const response = await fetch('{{ url_for("submit_registration") }}', {
+                const response = await fetch('{{ url_for("submit_login") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -175,22 +118,16 @@
                     // Show success message
                     successMessage.classList.add('show');
                     
-                    // Reset form
-                    form.reset();
-
-                    // Hide success message after 5 seconds
+                    // Redirect to dashboard after 1 second
                     setTimeout(() => {
-                        successMessage.classList.remove('show');
-                    }, 5000);
-
-                    // Redirect to login after 2 seconds
-                    setTimeout(() => {
-                        window.location.href = '{{ url_for("login") }}';
-                    }, 2000);
+                        window.location.href = '{{ url_for("dashboard") }}';
+                    }, 1000);
+                } else {
+                    alert(data.message);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Възникна грешка при регистрацията. Моля, опитай отново.');
+                alert('Възникна грешка. Моля, опитайте отново.');
             }
         });
     </script>

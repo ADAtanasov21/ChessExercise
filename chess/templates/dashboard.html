@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контролна плоча - Европейски шахматен турнир 2026</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .user-profile {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #d4af37;
+        }
+
+        .user-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item label {
+            color: #d4af37;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item p {
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .users-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .users-table h3 {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #d4af37;
+            padding: 1.5rem;
+            margin: 0;
+        }
+
+        .users-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th {
+            background: #f5f5f5;
+            color: #333;
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .users-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        .users-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .logout-btn {
+            background: #d4af37;
+            color: #1a1a1a;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #f0e68c;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo">♔ ШАХМАТ 2026 ♔</div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Начало</a></li>
+                    <li><a href="{{ url_for('chess_board') }}">Шахматна дъска</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Изход</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>Контролна таблица</h1>
+        <p class="hero-subtitle">Добре дошли на турнира!</p>
+    </section>
+
+    <!-- DASHBOARD CONTENT -->
+    <section class="dashboard-container">
+        {% if user %}
+        <div class="user-profile">
+            <h2 style="color: #d4af37; margin-bottom: 2rem;">👤 Моя профил</h2>
+            <div class="user-info">
+                <div class="info-item">
+                    <label>Име</label>
+                    <p>{{ user.firstName }}</p>
+                </div>
+                <div class="info-item">
+                    <label>Фамилия</label>
+                    <p>{{ user.lastName }}</p>
+                </div>
+                <div class="info-item">
+                    <label>Имейл</label>
+                    <p>{{ user.email }}</p>
+                </div>
+                <div class="info-item">
+                    <label>Телефон</label>
+                    <p>{{ user.phone }}</p>
+                </div>
+                <div class="info-item">
+                    <label>Пол</label>
+                    <p>{{ user.gender }}</p>
+                </div>
+                <div class="info-item">
+                    <label>Регистриран</label>
+                    <p>{{ user.registeredAt[:10] }}</p>
+                </div>
+            </div>
+            {% if user.additionalInfo %}
+            <div>
+                <label style="color: #d4af37; font-weight: bold; display: block; margin-bottom: 0.5rem;">Допълнителна информация</label>
+                <p style="color: #333;">{{ user.additionalInfo }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Users Table -->
+        <div class="users-table">
+            <h3>📋 Всички регистрирани участници ({{ all_users|length }})</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Име</th>
+                        <th>Фамилия</th>
+                        <th>Имейл</th>
+                        <th>Телефон</th>
+                        <th>Пол</th>
+                        <th>Регистриран</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_item in all_users %}
+                    <tr>
+                        <td>{{ user_item.firstName }}</td>
+                        <td>{{ user_item.lastName }}</td>
+                        <td>{{ user_item.email }}</td>
+                        <td>{{ user_item.phone }}</td>
+                        <td>{{ user_item.gender }}</td>
+                        <td>{{ user_item.registeredAt[:10] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ℹ️ За събитието</h4>
+                <p>Европейският шахматен турнир 2026 е едно от най-престижните събитие за всички шахматни любители и професионалисти.</p>
+            </div>
+            <div class="footer-section">
+                <h4>📞 Контакти</h4>
+                <p><strong>Телефон:</strong> +359 2 916 6300</p>
+                <p><strong>Email:</strong> info@chesseurope2026.bg</p>
+                <p><strong>Адрес:</strong> 1 Буд. Васил Левски, София</p>
+            </div>
+            <div class="footer-section">
+                <h4>🔗 Полезни линкове</h4>
+                <a href="#">Правила на турнира</a>
+                <a href="#">Чести въпроси</a>
+                <a href="#">За нас</a>
+                <a href="#">Политика на приватност</a>
+            </div>
+            <div class="footer-section">
+                <h4>📱 Следи ни</h4>
+                <p>Facebook | Twitter | Instagram | YouTube</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Европейски шахматен турнир. Всички права запазени. ♔</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -153,7 +153,13 @@
             <nav>
                 <ul>
                     <li><a href="{{ url_for('index') }}">Начало</a></li>
+                    {% if session.get('user_email') %}
+                    <li><a href="{{ url_for('dashboard') }}" class="btn-primary">Мой профил</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Изход</a></li>
+                    {% else %}
                     <li><a href="{{ url_for('register') }}" class="btn-primary">Регистрирай се</a></li>
+                    <li><a href="{{ url_for('login') }}" class="btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Вход</a></li>
+                    {% endif %}
                 </ul>
             </nav>
         </div>
@@ -250,25 +256,15 @@
     </section>
 
     <!-- RULES SECTION -->
-    <section class="container" style="background: #f9f9f9; margin: 2rem 0; padding: 3rem 2rem; border-radius: 12px;">
-        <h2>🎯 Основни правила</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
-            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
-                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">♔ Как се движат фигурите</h4>
-                <p>Всяка фигура има различни правила за движение. Крал един квадрат, кралица неограничено в линии, топ хоризонтално/вертикално и т.н.</p>
-            </div>
-            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
-                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">🎮 Белите винаги играят първи</h4>
-                <p>В шахмата традиционно белите фигури правят първия ход. След това играчите редуват ходовете един по един.</p>
-            </div>
-            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
-                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">🎯 Целта на играта</h4>
-                <p>Целта е да поставиш краля на противника в позиция, където той не може да избегне бъдещия замах (мат).</p>
-            </div>
-            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
-                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">✊ Специални ходове</h4>
-                <p>Рокада, вземане наихода (en passant) и трансформация на пешката са специални ходове в шахмата.</p>
-            </div>
+    <section class="container">
+        <div class="info-box">
+            <h3>🎯 Основни правила на шахмата</h3>
+            <ul style="text-align: left; display: inline-block; color: #f0e68c; line-height: 2;">
+                <li><strong>♔ Как се движат фигурите:</strong> Крал един квадрат, кралица неограничено в линии, топ хоризонтално/вертикално, епископ диагонално, рицар L-образно, пешка напред един квадрат</li>
+                <li><strong>🎮 Белите винаги играят първи:</strong> В шахмата традиционно белите фигури правят първия ход. След това играчите редуват ходовете един по един</li>
+                <li><strong>🎯 Целта на играта:</strong> Целта е да поставиш краля на противника в позиция, където той не може да избегне бъдещия замах (мат)</li>
+                <li><strong>✊ Специални ходове:</strong> Рокада (движение на крал и топ), вземане наихода (en passant) и трансформация на пешката са специални ходове в шахмата</li>
+            </ul>
         </div>
     </section>
 
@@ -303,20 +299,38 @@
     </footer>
 
     <script>
-        // Initialize board with starting position
+        // Chess piece movements
+        const PIECES = {
+            '♔': { name: 'Крал', color: 'white' },
+            '♕': { name: 'Кралица', color: 'white' },
+            '♖': { name: 'Топ', color: 'white' },
+            '♗': { name: 'Епископ', color: 'white' },
+            '♘': { name: 'Рицар', color: 'white' },
+            '♙': { name: 'Пешка', color: 'white' },
+            '♚': { name: 'Крал', color: 'black' },
+            '♛': { name: 'Кралица', color: 'black' },
+            '♜': { name: 'Топ', color: 'black' },
+            '♝': { name: 'Епископ', color: 'black' },
+            '♞': { name: 'Рицар', color: 'black' },
+            '♟': { name: 'Пешка', color: 'black' }
+        };
+
         const startingPosition = [
-            ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],  // Black pieces (row 8)
-            ['♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'],  // Black pawns (row 7)
-            ['', '', '', '', '', '', '', ''],             // Empty
-            ['', '', '', '', '', '', '', ''],             // Empty
-            ['', '', '', '', '', '', '', ''],             // Empty
-            ['', '', '', '', '', '', '', ''],             // Empty
-            ['♙', '♙', '♙', '♙', '♙', '♙', '♙', '♙'],  // White pawns (row 2)
-            ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']   // White pieces (row 1)
+            ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],
+            ['♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['♙', '♙', '♙', '♙', '♙', '♙', '♙', '♙'],
+            ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']
         ];
 
         let boardState = JSON.parse(JSON.stringify(startingPosition));
         let selectedSquare = null;
+        let validMoves = [];
+        let currentTurn = 'white';
+        let gameOver = false;
 
         function initializeBoard() {
             const boardElement = document.getElementById('chessBoard');
@@ -330,36 +344,330 @@
                     square.className = `square ${isWhite ? 'white' : 'black'}`;
                     square.id = `square-${row}-${col}`;
                     square.textContent = boardState[row][col];
+                    square.style.cursor = 'pointer';
                     
-                    square.addEventListener('click', () => handleSquareClick(row, col, square));
+                    square.addEventListener('click', () => handleSquareClick(row, col));
                     
                     boardElement.appendChild(square);
                 }
             }
         }
 
-        function handleSquareClick(row, col, squareElement) {
-            if (selectedSquare) {
-                selectedSquare.classList.remove('selected');
+        function findKing(color) {
+            const king = color === 'white' ? '♔' : '♚';
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if (boardState[row][col] === king) {
+                        return [row, col];
+                    }
+                }
             }
+            return null;
+        }
+
+        function isSquareAttacked(row, col, byColor) {
+                // Проверка ако квадратът е напаѓан от противничке фигури
+                for (let r = 0; r < 8; r++) {
+                    for (let c = 0; c < 8; c++) {
+                        const piece = boardState[r][c];
+                        if (!piece) continue;
+
+                        if (PIECES[piece].color === byColor) {
+                            const moves = getAllMovesForPiece(r, c, piece);
+                            if (moves.some(move => move[0] === row && move[1] === col)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            return false;
+        }
+
+        function isKingInCheck(color) {
+            const kingPos = findKing(color);
+            if (!kingPos) return false;
+
+            const oppositeColor = color === 'white' ? 'black' : 'white';
+            return isSquareAttacked(kingPos[0], kingPos[1], oppositeColor);
+        }
+
+        function isCheckmate(color) {
+            if (!isKingInCheck(color)) return false;
+
+            // Проверка ако има барем един валидна позиция
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const piece = boardState[row][col];
+                    if (!piece || PIECES[piece].color !== color) continue;
+
+                    const moves = getValidMoves(row, col);
+                    if (moves.length > 0) {
+                        return false; // Постои валидна позиция
+                    }
+                }
+            }
+
+            return true; // Няма валидни позиции и кралът е в опасност
+        }
+
+        function getAllMovesForPiece(row, col, piece) {
+            // Враќа сите ходови без проверка на шах
+            const pieceName = PIECES[piece].name;
+
+            if (pieceName === 'Пешка') {
+                return getPawnMovesRaw(row, col, piece);
+            } else if (pieceName === 'Рицар') {
+                return getKnightMovesRaw(row, col, piece);
+            } else if (pieceName === 'Топ') {
+                return getRookMovesRaw(row, col, piece);
+            } else if (pieceName === 'Епископ') {
+                return getBishopMovesRaw(row, col, piece);
+            } else if (pieceName === 'Кралица') {
+                return getQueenMovesRaw(row, col, piece);
+            } else if (pieceName === 'Крал') {
+                return getKingMovesRaw(row, col, piece);
+            }
+            return [];
+        }
+
+        function getValidMoves(row, col) {
+            const piece = boardState[row][col];
+            if (!piece) return [];
+
+            const pieceInfo = PIECES[piece];
+            if (pieceInfo.color !== currentTurn) return [];
+
+            let moves = getAllMovesForPiece(row, col, piece);
+
+            // Ако кралът е в опасност, може да мердаш само ако го спасиш
+            if (isKingInCheck(currentTurn)) {
+                moves = moves.filter(move => {
+                    // Симулирай позицията
+                    const [toRow, toCol] = move;
+                    const originalPiece = boardState[toRow][toCol];
+                    boardState[toRow][toCol] = piece;
+                    boardState[row][col] = '';
+
+                    // Проверка ако кралът е сè уште в опасност
+                    const stillInCheck = isKingInCheck(currentTurn);
+
+                    // Върни позицията
+                    boardState[row][col] = piece;
+                    boardState[toRow][toCol] = originalPiece;
+
+                    return !stillInCheck;
+                });
+            }
+
+            return moves;
+        }
+
+        function getPawnMovesRaw(row, col, piece) {
+            const moves = [];
+            const isWhite = piece === '♙';
+            const direction = isWhite ? -1 : 1;
+            const startRow = isWhite ? 6 : 1;
+
+            const newRow = row + direction;
+            if (newRow >= 0 && newRow < 8 && !boardState[newRow][col]) {
+                moves.push([newRow, col]);
+
+                if (row === startRow) {
+                    const doubleRow = row + 2 * direction;
+                    if (!boardState[doubleRow][col]) {
+                        moves.push([doubleRow, col]);
+                    }
+                }
+            }
+
+            for (let newCol of [col - 1, col + 1]) {
+                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    const targetPiece = boardState[newRow][newCol];
+                    if (targetPiece && PIECES[targetPiece].color !== PIECES[piece].color) {
+                        moves.push([newRow, newCol]);
+                    }
+                }
+            }
+
+            return moves;
+        }
+
+        function getKnightMovesRaw(row, col, piece) {
+            const moves = [];
+            const knightMoves = [
+                [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+                [1, -2], [1, 2], [2, -1], [2, 1]
+            ];
+
+            for (let [dr, dc] of knightMoves) {
+                const newRow = row + dr;
+                const newCol = col + dc;
+                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    const targetPiece = boardState[newRow][newCol];
+                    if (!targetPiece || PIECES[targetPiece].color !== PIECES[piece].color) {
+                        moves.push([newRow, newCol]);
+                    }
+                }
+            }
+
+            return moves;
+        }
+
+        function getRookMovesRaw(row, col, piece) {
+            const moves = [];
+            const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
             
-            selectedSquare = squareElement;
-            selectedSquare.classList.add('selected');
+            for (let [dr, dc] of directions) {
+                for (let i = 1; i < 8; i++) {
+                    const newRow = row + dr * i;
+                    const newCol = col + dc * i;
+                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) break;
+
+                    const targetPiece = boardState[newRow][newCol];
+                    if (!targetPiece) {
+                        moves.push([newRow, newCol]);
+                    } else {
+                        if (PIECES[targetPiece].color !== PIECES[piece].color) {
+                            moves.push([newRow, newCol]);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            return moves;
+        }
+
+        function getBishopMovesRaw(row, col, piece) {
+            const moves = [];
+            const directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
             
-            // Can also add piece dragging functionality here
+            for (let [dr, dc] of directions) {
+                for (let i = 1; i < 8; i++) {
+                    const newRow = row + dr * i;
+                    const newCol = col + dc * i;
+                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) break;
+
+                    const targetPiece = boardState[newRow][newCol];
+                    if (!targetPiece) {
+                        moves.push([newRow, newCol]);
+                    } else {
+                        if (PIECES[targetPiece].color !== PIECES[piece].color) {
+                            moves.push([newRow, newCol]);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            return moves;
+        }
+
+        function getQueenMovesRaw(row, col, piece) {
+            return [...getRookMovesRaw(row, col, piece), ...getBishopMovesRaw(row, col, piece)];
+        }
+
+        function getKingMovesRaw(row, col, piece) {
+            const moves = [];
+            const directions = [
+                [-1, -1], [-1, 0], [-1, 1],
+                [0, -1], [0, 1],
+                [1, -1], [1, 0], [1, 1]
+            ];
+
+            for (let [dr, dc] of directions) {
+                const newRow = row + dr;
+                const newCol = col + dc;
+                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    const targetPiece = boardState[newRow][newCol];
+                    if (!targetPiece || PIECES[targetPiece].color !== PIECES[piece].color) {
+                        moves.push([newRow, newCol]);
+                    }
+                }
+            }
+
+            return moves;
+        }
+
+        function highlightValidMoves(moves) {
+            document.querySelectorAll('.square').forEach(el => {
+                el.style.backgroundColor = '';
+            });
+
+            for (let [row, col] of moves) {
+                const square = document.getElementById(`square-${row}-${col}`);
+                if (square) {
+                    square.style.backgroundColor = '#90ee90';
+                }
+            }
+        }
+
+        function handleSquareClick(row, col) {
+            if (gameOver) return;
+
+            const piece = boardState[row][col];
+            const clickedSquare = document.getElementById(`square-${row}-${col}`);
+
+            if (validMoves.some(move => move[0] === row && move[1] === col)) {
+                movePiece(selectedSquare.id, row, col);
+                clearHighlights();
+                selectedSquare = null;
+                validMoves = [];
+                switchTurn();
+                
+                // Проверка за шахмат
+                if (isCheckmate(currentTurn)) {
+                    const winnerColor = currentTurn === 'white' ? '🖤 ЧЕРНИТЕ' : '🤍 БЕЛИТЕ';
+                    alert(`🎉 ШАХМАТ! ${winnerColor} ПОБЕДИХА! 🎉`);
+                    gameOver = true;
+                } else if (isKingInCheck(currentTurn)) {
+                    const inCheckColor = currentTurn === 'white' ? '🤍 БЕЛИТЕ' : '🖤 ЧЕРНИТЕ';
+                    alert(`⚠️ ШАХ! ${inCheckColor} КОРОЛЯТ В ОПАСНОСТ!`);
+                }
+                return;
+            }
+
+            if (piece && PIECES[piece].color === currentTurn) {
+                if (selectedSquare) {
+                    selectedSquare.style.backgroundColor = '';
+                }
+                
+                selectedSquare = clickedSquare;
+                selectedSquare.style.backgroundColor = '#ffeb3b';
+                validMoves = getValidMoves(row, col);
+                highlightValidMoves(validMoves);
+            }
+        }
+
+        function movePiece(fromId, toRow, toCol) {
+            const [fromRow, fromCol] = fromId.replace('square-', '').split('-').map(Number);
+            
+            boardState[toRow][toCol] = boardState[fromRow][fromCol];
+            boardState[fromRow][fromCol] = '';
+            
+            initializeBoard();
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.square').forEach(square => {
+                square.style.backgroundColor = '';
+            });
+        }
+
+        function switchTurn() {
+            currentTurn = currentTurn === 'white' ? 'black' : 'white';
         }
 
         function resetBoard() {
             boardState = JSON.parse(JSON.stringify(startingPosition));
+            currentTurn = 'white';
+            selectedSquare = null;
+            validMoves = [];
+            gameOver = false;
+            clearHighlights();
             initializeBoard();
         }
 
-        function clearBoard() {
-            boardState = Array(8).fill(null).map(() => Array(8).fill(''));
-            initializeBoard();
-        }
-
-        // Initialize board on page load
         initializeBoard();
     </script>
 </body>

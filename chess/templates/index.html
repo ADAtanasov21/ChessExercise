@@ -17,7 +17,13 @@
                     <li><a href="#speakers">Оратори</a></li>
                     <li><a href="#location">Място</a></li>
                     <li><a href="{{ url_for('chess_board') }}">Шахматна дъска</a></li>
+                    {% if session.get('user_email') %}
+                    <li><a href="{{ url_for('dashboard') }}" class="btn-primary">Мой профил</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Изход</a></li>
+                    {% else %}
                     <li><a href="{{ url_for('register') }}" class="btn-primary">Регистрирай се</a></li>
+                    <li><a href="{{ url_for('login') }}" class="btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Вход</a></li>
+                    {% endif %}
                 </ul>
             </nav>
         </div>
@@ -125,29 +131,19 @@
     </section>
 
     <!-- SCHEDULE SECTION -->
-    <section class="container" style="background: #f9f9f9; margin: 2rem 0; border-radius: 12px;">
-        <h2>📅 График на събитието</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
-            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
-                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">15 май - Отваряне</h4>
-                <p>Церемония по открытие, регистрация на участници и приветствие от организаторите.</p>
-            </div>
-            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
-                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">16-20 май - Турнир</h4>
-                <p>5 тура на турнира. Всеки ден по един тур, начало в 14:00 и 20:00.</p>
-            </div>
-            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
-                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">21 май - Мастер класове</h4>
-                <p>Лекции от водещи гросмайстори и анализ на избрани партии.</p>
-            </div>
-            <div style="padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #d4af37;">
-                <h4 style="color: #d4af37; margin-bottom: 0.5rem;">22 май - Финала</h4>
-                <p>Финални партии и церемония по награждаване с галапо.</p>
-            </div>
+    <section class="container">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 2rem; border-radius: 12px; margin: 2rem 0; text-align: center;">
+            <h2 style="color: #d4af37; margin-bottom: 2rem;">📅 График на събитието</h2>
+            <ul style="text-align: left; display: inline-block; color: #f0e68c; line-height: 2;">
+                <li><strong>15 май - Отваряне:</strong> Церемония по открытие, регистрация на участници и приветствие от организаторите</li>
+                <li><strong>16-20 май - Турнир:</strong> 5 тура на турнира. Всеки ден по един тур, начало в 14:00 и 20:00</li>
+                <li><strong>21 май - Мастер класове:</strong> Лекции от водещи гросмайстори и анализ на избрани партии</li>
+                <li><strong>22 май - Финала:</strong> Финални партии и церемония по награждаване с галапо</li>
+            </ul>
         </div>
     </section>
-
     <!-- REGISTRATION CALL TO ACTION -->
+    {% if not session.get('user_email') %}
     <section style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 4rem 2rem; text-align: center;">
         <h2 style="color: #d4af37; margin-bottom: 1rem;">Готов ли си за предизвикателството?</h2>
         <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #f0e68c;">
@@ -155,6 +151,7 @@
         </p>
         <a href="{{ url_for('register') }}" class="btn-primary">Регистрирай се сега</a>
     </section>
+    {% endif %}
 
     <!-- FOOTER -->
     <footer>

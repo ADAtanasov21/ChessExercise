@@ -250,6 +250,29 @@ section h2::after {
     line-height: 1.5;
 }
 
+/* ===== SCHEDULE SECTION ===== */
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.schedule-card {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid var(--gold);
+}
+
+.schedule-card h4 {
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+}
+
 /* ===== LOCATION SECTION ===== */
 .location-container {
     display: grid;
